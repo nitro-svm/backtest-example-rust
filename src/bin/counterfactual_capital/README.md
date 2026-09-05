@@ -18,7 +18,7 @@ Capital and curve are separate knobs because they fail in different places: the 
 Set the environment with the plan and time range of interest.
 ```sh
 export SIMULATOR_API_KEY=<key>
-PLAN=src/bin/counterfactual_capital/tempest-sol-usdc.json
+PLAN=src/bin/counterfactual_capital/<plan_name>.json
 RANGE="--start-slot 439649408 --slot-count 9999"
 ```
 
@@ -29,19 +29,19 @@ RANGE="--start-slot 439649408 --slot-count 9999"
 {
   "directFill": {
     "aggregator": "titan",       // the router whose encoder builds the replacement hop
-    "venue": "Tempest",          // as that router's IDL names it, or its ordinal
-    "pair": ["So111...112", "EPjFW...Dt1v"],
+    "venue": "temp",             // as that router's IDL names it, or its ordinal
+    "pair": ["So111...", "EPjFW..."],
     "slippageBps": 50,
     "market": {
-      "mints": ["So111...112", "EPjFW...Dt1v"],  // the VENUE's ordering; a direction byte indexes it
+      "mints": ["So111...", "EPjFW..."],  // the VENUE's ordering; a direction byte indexes it
       "accounts": [{ "address": "...", "writable": true }]   // its account run, in program order
     }
   },
   "inventory": {
-    "vaults": ["4kHHme...", "6vNWbf..."],        // in the order the state mirrors them
+    "vaults": ["...", "..."],                    // in the order the state mirrors them
     "state": {
-      "account": "FQmFVQ...",
-      "discriminator": "tempest1",               // asserted before a byte is written
+      "account": "...",
+      "discriminator": "temp",                   // asserted before a byte is written
       "len": 2385,                               // likewise
       "maxTiers": 32,
       "balanceMirrors": [2321, 2329],            // the venue's own copies of each vault balance
@@ -74,12 +74,12 @@ cargo run --bin counterfactual_capital -- $RANGE --plan $PLAN \
 `--capture` records the venue's trajectory the first time and reads it back afterwards, which saves the reference pass on every later run over the same range. The recording is refused if it names a different account than the plan.
 ```sh
 cargo run --bin counterfactual_capital -- $RANGE --plan $PLAN \
-  --multiple 1000 --scale ladder --capture tempest.jsonl --out wider.jsonl
+  --multiple 1000 --scale ladder --capture venue.jsonl --out wider.jsonl
 ```
 
 ## Results
 
-For the Tempest SOL/USDC market in the range `439649408–439659407` from 2026-09-01, over 56,960 buildable hops:
+For the a sample venue's SOL/USDC market in the range `439649408–439659407` from 2026-09-01, over 56,960 buildable hops:
 
 | arm | max trade | won | filled | mean bps | vs 1x | refused |
 |---|---|---|---|---|---|---|
